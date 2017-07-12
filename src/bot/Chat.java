@@ -78,7 +78,7 @@ public class Chat extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,6 +147,7 @@ public class Chat extends javax.swing.JFrame {
             System.out.println("Testing 1 - Send Http GET request");
             String city1 = captureCity1(user);
             String city2 = captureCity2(user);
+            System.out.println("city1: " + city1 + "    city2: " + city2);
             String km = "";
             try {
                 km = http.calculateDistance(city1, city2);
@@ -166,11 +167,13 @@ public class Chat extends javax.swing.JFrame {
     private String captureCity1(String user) {
         String city1 = "";
         int cityStartID = 0, cityFinishID = 0;
+        System.out.println("String length: " + user.length());
+        
         for (int i = 0; i < user.length() - 1; i++) {
-            System.out.println(user.charAt(i));
             if (user.charAt(i) == 't' && user.charAt(i + 1) == 'w' && user.charAt(i + 2) == 'e' && user.charAt(i + 3) == 'e' && user.charAt(i + 4) == 'n') {
                 cityStartID = i + 6;
-            } else if (user.charAt(i) == 'a' && user.charAt(i + 1) == 'n' && user.charAt(i + 2) == 'd') {
+            }
+            else if (user.charAt(i) == 'a' && user.charAt(i + 1) == 'n' && user.charAt(i + 2) == 'd' && (i+2)< user.length()-2) {
                 cityFinishID = i - 1;
             }
         }
