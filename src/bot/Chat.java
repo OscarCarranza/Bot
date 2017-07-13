@@ -13,6 +13,15 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.swing.BrowserView;
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  *
@@ -38,11 +47,29 @@ public class Chat extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrame1 = new javax.swing.JFrame();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         chatArea = new javax.swing.JTextArea();
         userMsj = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+
+        jFrame1.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                jFrame1WindowClosed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,7 +82,7 @@ public class Chat extends javax.swing.JFrame {
         jScrollPane1.setViewportView(chatArea);
 
         jPanel4.add(jScrollPane1);
-        jScrollPane1.setBounds(213, 30, 400, 320);
+        jScrollPane1.setBounds(180, 20, 400, 320);
 
         userMsj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -63,7 +90,7 @@ public class Chat extends javax.swing.JFrame {
             }
         });
         jPanel4.add(userMsj);
-        userMsj.setBounds(210, 370, 360, 30);
+        userMsj.setBounds(180, 360, 350, 30);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/send.gif"))); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -72,17 +99,21 @@ public class Chat extends javax.swing.JFrame {
             }
         });
         jPanel4.add(jLabel1);
-        jLabel1.setBounds(580, 360, 40, 50);
+        jLabel1.setBounds(540, 350, 40, 50);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 643, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 11, Short.MAX_VALUE))
         );
 
         pack();
@@ -94,7 +125,7 @@ public class Chat extends javax.swing.JFrame {
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         chat = chatArea.getText();
-
+        
         if (userMsj.getText().equals("")) {
             System.out.println("Empty message!");
         } else {
@@ -107,11 +138,19 @@ public class Chat extends javax.swing.JFrame {
             hiloPuntos = new Hilo(chatArea, response);
             pts = new Thread(hiloPuntos);
             pts.start();
-
+            
         }
 
     }//GEN-LAST:event_jLabel1MouseClicked
 
+    private void jFrame1WindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_jFrame1WindowClosed
+        try {
+            resetMap(fileName, origin, destination);
+        } catch (IOException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jFrame1WindowClosed
+    
     private String talkToMe(String user) {
         String response = "";
         user = user.toLowerCase();
@@ -132,7 +171,7 @@ public class Chat extends javax.swing.JFrame {
             } else if (user.contains("i'm")) {
                 userName = user.substring(3);
             }
-
+            
             response = "Nice to meet you" + userName;
         }
 
@@ -154,16 +193,16 @@ public class Chat extends javax.swing.JFrame {
             } catch (Exception ex) {
                 Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
             city1 = city1.substring(0, 1).toUpperCase() + city1.substring(1);
             city2 = city2.substring(0, 1).toUpperCase() + city2.substring(1);
-
+            
             response = "The distance between " + city1 + " and " + city2 + " is " + km;
         }
-
+        
         return response;
     }
-
+    
     private String captureCity1(String user) {
         String city1 = "";
         int cityStartID = 0, cityFinishID = 0;
@@ -172,16 +211,15 @@ public class Chat extends javax.swing.JFrame {
         for (int i = 0; i < user.length() - 1; i++) {
             if (user.charAt(i) == 't' && user.charAt(i + 1) == 'w' && user.charAt(i + 2) == 'e' && user.charAt(i + 3) == 'e' && user.charAt(i + 4) == 'n') {
                 cityStartID = i + 6;
-            }
-            else if (user.charAt(i) == 'a' && user.charAt(i + 1) == 'n' && user.charAt(i + 2) == 'd' && (i+2)< user.length()-2) {
+            } else if (user.charAt(i) == 'a' && user.charAt(i + 1) == 'n' && user.charAt(i + 2) == 'd' && (i + 2) < user.length() - 2) {
                 cityFinishID = i - 1;
             }
         }
-
+        
         city1 = user.substring(cityStartID, cityFinishID);
         return city1;
     }
-
+    
     private String captureCity2(String user) {
         String city2 = "";
         int cityStartID = 0, cityFinishID = user.length();
@@ -229,16 +267,17 @@ public class Chat extends javax.swing.JFrame {
                 new Chat().setVisible(true);
             }
         });
-
+        
     }
-
+    
     public String calculateDistance(String city1, String city2) throws Exception {
-
-        String origin = city1.replace(' ', '+'), destination = city2.replace(' ', '+');
+        
+        origin = city1.replace(' ', '+');        
+        destination = city2.replace(' ', '+');
         String YOUR_API_KEY = "AIzaSyCm5bDkt7Ohgm4l5VhBstydD-fGSmcr6oo";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin="
                 + origin + "&destination=" + destination + "&key=" + YOUR_API_KEY;
-
+        
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -247,16 +286,16 @@ public class Chat extends javax.swing.JFrame {
 
         //add request header
         con.setRequestProperty("User-Agent", USER_AGENT);
-
+        
         int responseCode = con.getResponseCode();
         System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
-
+        
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
+        
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
@@ -274,12 +313,57 @@ public class Chat extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        routeMap(origin, destination);
         return routeDistance;
+        
     }
+    
+    public void routeMap(String origin, String destination) throws IOException {
+        
+        fileName = "C:\\Users\\Gisselle Lagos\\Documents\\NetBeansProjects\\GoogleMapsSample\\map2.html";
+        FileReader fr = new FileReader(fileName);
+        String s = "";
+        BufferedReader br = new BufferedReader(fr);
+        StringBuilder content = new StringBuilder(5000);
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        while ((s = br.readLine()) != null) {
+            if (s.contains("originXXX")) {
+                s = s.replace("originXXX", origin.replace('+', ' '));
+            } else if (s.contains("destinyXXX")) {
+                s = s.replace("destinyXXX", destination.replace('+', ' '));
+            }
+            content.append(s);
+            content.append('\n');
+        }
+        
+        fw = new FileWriter(fileName);
+        bw = new BufferedWriter(fw);
+        bw.write(content.toString());
+        
+        if (bw != null) {
+            bw.close();
+        }
+        
+        if (fw != null) {
+            fw.close();
+        }
+        
+        final Browser browser = new Browser();
+        BrowserView browserView = new BrowserView(browser);
+        JFrame frame = new JFrame ("Route Map");
+        frame.setTitle("Route Map");
+        frame.add(browserView, BorderLayout.CENTER);
+        frame.setSize(900, 500);
+        frame.setVisible(true);
+        browser.loadURL("C:\\Users\\Gisselle Lagos\\Documents\\NetBeansProjects\\GoogleMapsSample\\map2.html");
+        
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chatArea;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
@@ -290,6 +374,36 @@ public class Chat extends javax.swing.JFrame {
     public Hilo hiloPuntos;
     Thread pts;
     private final String USER_AGENT = "Mozilla/5.0";
-    private String distance = "";
-
+    private String fileName, origin, destination;
+    
+    public void resetMap(String fileName, String origin, String destination) throws FileNotFoundException, IOException {
+        FileReader fr = new FileReader(fileName);
+        String s = "";
+        BufferedReader br = new BufferedReader(fr);
+        StringBuilder content = new StringBuilder(5000);
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        while ((s = br.readLine()) != null) {
+            if (s.contains(origin)) {
+                s = s.replace(origin.replace('+', ' '), "originXXX");
+            } else if (s.contains(destination)) {
+                s = s.replace(destination.replace('+', ' '), "destinyXXX");
+            }
+            content.append(s);
+            content.append('\n');
+        }
+        
+        fw = new FileWriter(fileName);
+        bw = new BufferedWriter(fw);
+        bw.write(content.toString());
+        
+        if (bw != null) {
+            bw.close();
+        }
+        
+        if (fw != null) {
+            fw.close();
+        }
+    }
+    
 }
